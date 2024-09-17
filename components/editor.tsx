@@ -10,6 +10,8 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HeadingNode } from '@lexical/rich-text';
 import { ListNode, ListItemNode } from '@lexical/list';
 import { Toolbar } from './toolbar';
+import { LinkNode } from '@lexical/link';
+import { LinkPlugin as LexicalLinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 
 const theme = {
     heading: {
@@ -20,12 +22,19 @@ const theme = {
     list: {
         ul: 'list-disc list-inside',
         ol: 'list-decimal list-inside',
-        // checkList: 'list-none',
     },
     text: {
-        underline: 'underline',  // Add underline class
+        underline: 'underline',
+    },
+    link: 'text-blue-500 underline', // Ensure this class is applied
+    alignment: {
+        left: 'text-left',
+        center: 'text-center',
+        right: 'text-right',
+        justify: 'text-justify',
     },
 };
+
 function onError(error: Error) {
     console.error(error);
 }
@@ -33,7 +42,7 @@ function onError(error: Error) {
 export function Editor() {
     const initialConfig = {
         namespace: 'MyEditor',
-        nodes: [HeadingNode, ListNode, ListItemNode],
+        nodes: [HeadingNode, ListNode, ListItemNode, LinkNode],
         theme,
         onError,
     };
@@ -46,6 +55,7 @@ export function Editor() {
                 placeholder={<div>Enter some text...</div>}
                 ErrorBoundary={LexicalErrorBoundary}
             />
+            <LexicalLinkPlugin />
             <HistoryPlugin />
             <AutoFocusPlugin />
         </LexicalComposer>
