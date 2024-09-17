@@ -22,8 +22,10 @@ const theme = {
         ol: 'list-decimal list-inside',
         // checkList: 'list-none',
     },
+    text: {
+        underline: 'underline',  // Add underline class
+    },
 };
-
 function onError(error: Error) {
     console.error(error);
 }
