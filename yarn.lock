@@ -208,7 +208,7 @@
     "@lexical/utils" "0.17.1"
     lexical "0.17.1"
 
-"@lexical/list@0.17.1":
+"@lexical/list@0.17.1", "@lexical/list@^0.17.1":
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/@lexical/list/-/list-0.17.1.tgz#8b29d42fe310b25de0a160577adf5fc0b7c2a874"
   integrity sha512-k9ZnmQuBvW+xVUtWJZwoGtiVG2cy+hxzkLGU4jTq1sqxRIoSeGcjvhFAK8JSEj4i21SgkB1FmkWXoYK5kbwtRA==
