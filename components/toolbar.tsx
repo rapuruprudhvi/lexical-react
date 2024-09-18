@@ -24,8 +24,9 @@ import { ListType, $createListNode } from "@lexical/list";
 import { $getSelection, $isRangeSelection } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { Toggle } from '@/components/ui/toggle';
-import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode'; // Ensure correct import
-
+import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
+import { INSERT_IMAGE_COMMAND } from '../components/plugins/ImageNode';
+import { InsertImageDialog } from '../components/InsertImageDialog';
 
 
 type AlignmentType = "left" | "center" | "right" | "justify";
@@ -36,6 +37,8 @@ export function Toolbar() {
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [alignment, setAlignment] = useState<AlignmentType>("left");
+  const [showInsertImageDialog, setShowInsertImageDialog] = useState(false);
+
 
   useEffect(() => {
     const updateFormattingStatus = () => {
@@ -118,6 +121,17 @@ export function Toolbar() {
       editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined);
     });
   };
+  const openInsertImageDialog = () => {
+    setShowInsertImageDialog(true);
+  };
+
+  const closeInsertImageDialog = () => {
+    setShowInsertImageDialog(false);
+  };
+  const insertImage = (payload: { url: string }) => {
+    editor.dispatchCommand(INSERT_IMAGE_COMMAND, { url: payload.url });
+  };
+
 
   return (
     <div className="p-2 flex items-center border-b border-gray-700 bg-white shadow-sm">
@@ -230,8 +244,20 @@ export function Toolbar() {
           <path d="M0 10.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zM12 0H4a2 2 0 0 0-2 2v7h1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v7h1V2a2 2 0 0 0-2-2zm2 12h-1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2H2v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2z" />
         </svg>
       </Toggle>
+      <button onClick={openInsertImageDialog} aria-label="Insert Image">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-image">
+    <path d="M8.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+    <path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v8l-2.083-2.083a.5.5 0 0 0-.76.063L8 11 5.835 9.7a.5.5 0 0 0-.611.076L3 12V2z" />
+  </svg>
+</button>
 
+      {showInsertImageDialog && (
+        <InsertImageDialog
+          onClose={closeInsertImageDialog}
+          onInsert={insertImage}
+        />
+      )}
     </div>
 
-  );
+  )
 }
