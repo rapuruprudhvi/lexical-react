@@ -6,6 +6,7 @@ import {
   UNDO_COMMAND,
   REDO_COMMAND,
   FORMAT_ELEMENT_COMMAND,
+  TextFormatType,
 } from "lexical";
 import {
   Select,
@@ -18,6 +19,7 @@ import {
   UnderlineIcon,
   FontBoldIcon,
   FontItalicIcon,
+  StrikethroughIcon,
 } from "@radix-ui/react-icons";
 
 import { HeadingTagType, $createHeadingNode } from "@lexical/rich-text";
@@ -45,6 +47,7 @@ export function Toolbar() {
   const [isUnderline, setIsUnderline] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
+  const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [alignment, setAlignment] = useState<AlignmentType>("left");
   const [showInsertImageDialog, setShowInsertImageDialog] = useState(false);
   const [fontFamily, setFontFamily] = useState<FontFamily>("Arial");
@@ -58,6 +61,7 @@ export function Toolbar() {
           setIsUnderline(selection.hasFormat("underline"));
           setIsBold(selection.hasFormat("bold"));
           setIsItalic(selection.hasFormat("italic"));
+          setIsStrikethrough(selection.hasFormat("strikethrough"));
         }
       });
     };
@@ -148,6 +152,9 @@ export function Toolbar() {
   };
   const insertImage = (payload: { url: string }) => {
     editor.dispatchCommand(INSERT_IMAGE_COMMAND, { url: payload.url });
+  };
+  const toggleFormatting = (format: TextFormatType) => {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
   };
   return (
     <div className="p-2 flex items-center border-b border-gray-700 bg-white shadow-sm">
@@ -273,6 +280,7 @@ export function Toolbar() {
           onInsert={insertImage}
         />
       )}
+
       <div className="mr-2">
         <Select onValueChange={handleFontFamilyChange} value={fontFamily}>
           <SelectTrigger className="w-[115px] border-0 bg-gray-70">
@@ -288,6 +296,13 @@ export function Toolbar() {
           </SelectContent>
         </Select>
       </div>
+      <button
+        onClick={() => toggleFormatting("strikethrough")}
+        className={`toolbar-item flex items-center ${isStrikethrough ? 'text-blue-500' : ''}`}
+        aria-label="Strikethrough"
+      >
+        <StrikethroughIcon className="w-[16px] h-[16px] fill-[gray]" />
+      </button>
     </div>
   )
 }

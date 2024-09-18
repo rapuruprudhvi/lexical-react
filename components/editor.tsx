@@ -28,6 +28,7 @@ const theme = {
   },
   text: {
     underline: 'underline',
+    strikethrough: 'line-through',
   },
   link: 'text-blue-500 underline',
   alignment: {
