@@ -23,6 +23,8 @@ import { HeadingTagType, $createHeadingNode } from "@lexical/rich-text";
 import { ListType, $createListNode } from "@lexical/list";
 import { $getSelection, $isRangeSelection } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
+import { Toggle } from '@/components/ui/toggle';
+
 
 type AlignmentType = "left" | "center" | "right" | "justify";
 
@@ -185,31 +187,33 @@ export function Toolbar() {
       </div>
 
       {/* Bold Button */}
-      <button
+      <Toggle
         onClick={toggleBold}
-        className={`toolbar-item ${isBold ? "active" : ""}`}
         aria-label="Toggle bold"
+        pressed={isBold}
+        className="hover:bg-gray-200 p-2 rounded"
       >
-        <FontBoldIcon className="h-5 w-5" />
-      </button>
+        <FontBoldIcon className="h-4 w-4" />
+      </Toggle>
 
-      {/* Italic Button */}
-      <button
+      <Toggle
         onClick={toggleItalic}
-        className={`toolbar-item ${isItalic ? "active" : ""}`}
         aria-label="Toggle italic"
+        pressed={isItalic}
+        className="hover:bg-gray-200 p-2 rounded"
       >
-        <FontItalicIcon className="h-5 w-5" />
-      </button>
+        <FontItalicIcon className="h-4 w-4" />
+      </Toggle>
 
-      {/* Underline Button */}
-      <button
+      <Toggle
         onClick={toggleUnderline}
-        className={`toolbar-item ${isUnderline ? "active" : ""}`}
         aria-label="Toggle underline"
+        pressed={isUnderline}
+        disabled={isUnderline} // Adjust if you want to control the disabled state
+        className="hover:bg-gray-200 p-2 rounded"
       >
-        <UnderlineIcon className="h-5 w-5" />
-      </button>
+        <UnderlineIcon className="h-4 w-4" />
+      </Toggle>
     </div>
   );
 }
