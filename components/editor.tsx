@@ -1,5 +1,4 @@
 "use client";
-
 import React from 'react';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -12,52 +11,56 @@ import { ListNode, ListItemNode } from '@lexical/list';
 import { Toolbar } from './toolbar';
 import { LinkNode } from '@lexical/link';
 import { LinkPlugin as LexicalLinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin';
 
 const theme = {
-    heading: {
-        h1: 'text-5xl font-bold',
-        h2: 'text-4xl font-bold',
-        h3: 'text-3xl font-bold',
-    },
-    list: {
-        ul: 'list-disc list-inside',
-        ol: 'list-decimal list-inside',
-    },
-    text: {
-        underline: 'underline',
-    },
-    link: 'text-blue-500 underline', // Ensure this class is applied
-    alignment: {
-        left: 'text-left',
-        center: 'text-center',
-        right: 'text-right',
-        justify: 'text-justify',
-    },
+  heading: {
+    h1: 'text-5xl font-bold',
+    h2: 'text-4xl font-bold',
+    h3: 'text-3xl font-bold',
+  },
+  list: {
+    ul: 'list-disc list-inside',
+    ol: 'list-decimal list-inside',
+  },
+  text: {
+    underline: 'underline',
+  },
+  link: 'text-blue-500 underline',
+  alignment: {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
+    justify: 'text-justify',
+  },
+  horizontalRule: 'my-6 border-t border-red-500',
 };
 
 function onError(error: Error) {
-    console.error(error);
+  console.error(error);
 }
 
 export function Editor() {
-    const initialConfig = {
-        namespace: 'MyEditor',
-        nodes: [HeadingNode, ListNode, ListItemNode, LinkNode],
-        theme,
-        onError,
-    };
+  const initialConfig = {
+    namespace: 'MyEditor',
+    nodes: [HeadingNode, ListNode, ListItemNode, LinkNode, HorizontalRuleNode],
+    theme,
+    onError,
+  };
 
-    return (
-        <LexicalComposer initialConfig={initialConfig}>
-            <Toolbar />
-            <RichTextPlugin
-                contentEditable={<ContentEditable className='border min-h-96 p-4' />}
-                placeholder={<div>Enter some text...</div>}
-                ErrorBoundary={LexicalErrorBoundary}
-            />
-            <LexicalLinkPlugin />
-            <HistoryPlugin />
-            <AutoFocusPlugin />
-        </LexicalComposer>
-    );
+  return (
+    <LexicalComposer initialConfig={initialConfig}>
+      <Toolbar />
+      <RichTextPlugin
+        contentEditable={<ContentEditable className='border min-h-96 p-4' />}
+        placeholder={<div>Enter some text...</div>}
+        ErrorBoundary={LexicalErrorBoundary}
+      />
+      <LexicalLinkPlugin />
+      <HistoryPlugin />
+      <AutoFocusPlugin />
+      <HorizontalRulePlugin />
+    </LexicalComposer>
+  );
 }

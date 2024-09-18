@@ -24,6 +24,8 @@ import { ListType, $createListNode } from "@lexical/list";
 import { $getSelection, $isRangeSelection } from "lexical";
 import { $setBlocksType } from "@lexical/selection";
 import { Toggle } from '@/components/ui/toggle';
+import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode'; // Ensure correct import
+
 
 
 type AlignmentType = "left" | "center" | "right" | "justify";
@@ -110,6 +112,11 @@ export function Toolbar() {
 
   const handleRedo = () => {
     editor.dispatchCommand(REDO_COMMAND, undefined);
+  };
+  const insertHorizontalRule = () => {
+    editor.update(() => {
+      editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined);
+    });
   };
 
   return (
@@ -214,6 +221,17 @@ export function Toolbar() {
       >
         <UnderlineIcon className="h-4 w-4" />
       </Toggle>
+      <Toggle
+        onClick={insertHorizontalRule}
+        aria-label="Insert Horizontal Rule"
+        className="hover:bg-gray-200 p-2 rounded"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-break">
+          <path d="M0 10.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zM12 0H4a2 2 0 0 0-2 2v7h1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v7h1V2a2 2 0 0 0-2-2zm2 12h-1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2H2v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2z" />
+        </svg>
+      </Toggle>
+
     </div>
+
   );
 }
