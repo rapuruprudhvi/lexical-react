@@ -304,7 +304,7 @@
   dependencies:
     lexical "0.17.1"
 
-"@lexical/table@0.17.1":
+"@lexical/table@0.17.1", "@lexical/table@^0.17.1":
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/@lexical/table/-/table-0.17.1.tgz#62473f95a96c44ab20e4a1c1dec4b53a5093897c"
   integrity sha512-2fUYPmxhyuMQX3MRvSsNaxbgvwGNJpHaKx1Ldc+PT2MvDZ6ALZkfsxbi0do54Q3i7dOon8/avRp4TuVaCnqvoA==

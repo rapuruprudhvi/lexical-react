@@ -14,6 +14,7 @@ import { LinkPlugin as LexicalLinkPlugin } from '@lexical/react/LexicalLinkPlugi
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin';
 import { ImageNode } from '../components/plugins/ImageNode';
+import { FontFamilyPlugin, FontNode } from './plugins/FontFamilyPlugin';
 
 const theme = {
   heading: {
@@ -36,7 +37,7 @@ const theme = {
     justify: 'text-justify',
   },
   horizontalRule: 'my-6 border-t border-red-500',
-  image: 'my-4 max-w-full h-auto',  // Add image styles here
+  image: 'my-4 max-w-full h-auto',
 };
 
 function onError(error: Error) {
@@ -46,11 +47,16 @@ function onError(error: Error) {
 export function Editor() {
   const initialConfig = {
     namespace: 'MyEditor',
-    nodes: [HeadingNode, ListNode, ListItemNode, LinkNode, HorizontalRuleNode, ImageNode],
+    nodes: [HeadingNode,
+      ListNode,
+      ListItemNode,
+      LinkNode,
+      HorizontalRuleNode,
+      ImageNode,
+      FontNode],
     theme,
     onError,
   };
-
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <Toolbar />
@@ -60,6 +66,7 @@ export function Editor() {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <LexicalLinkPlugin />
+      <FontFamilyPlugin />
       <HistoryPlugin />
       <AutoFocusPlugin />
       <HorizontalRulePlugin />
