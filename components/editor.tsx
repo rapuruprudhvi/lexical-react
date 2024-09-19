@@ -1,3 +1,4 @@
+
 "use client";
 import React from 'react';
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
@@ -14,7 +15,8 @@ import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin
 import { ImageNode } from '../components/plugins/ImageNode';
 import { FontFamilyPlugin, FontNode } from './plugins/FontFamilyPlugin';
 import { AutoLinkPlugin, createLinkMatcherWithRegExp } from '@lexical/react/LexicalAutoLinkPlugin';
-import { LinkNode, AutoLinkNode } from '@lexical/link'; // Import AutoLinkNode
+import { LinkNode, AutoLinkNode } from '@lexical/link';
+import { InsertImagePlugin } from './plugins/InsertImagePlugin';
 
 
 const linkMatcher = createLinkMatcherWithRegExp(/https?:\/\/[^\s]+/gi);
@@ -78,6 +80,7 @@ export function Editor() {
       <FontFamilyPlugin />
       <HistoryPlugin />
       <AutoFocusPlugin />
+      <InsertImagePlugin />
       <HorizontalRulePlugin />
     </LexicalComposer>
   );

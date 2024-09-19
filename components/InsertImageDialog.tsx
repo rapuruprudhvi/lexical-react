@@ -1,49 +1,68 @@
-// InsertImageDialog.tsx
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-export interface InsertImageDialogProps {
+interface InsertImageDialogProps {
   onClose: () => void;
-  onInsert: (payload: { url: string }) => void;
+  onInsert: (payload: { urls: string[] }) => void; // Handle multiple URLs
 }
 
-export const InsertImageDialog: React.FC<InsertImageDialogProps> = ({ onClose, onInsert }) => {
-  const [file, setFile] = useState<File | null>(null);
+export function InsertImageDialog({ onClose, onInsert }: InsertImageDialogProps) {
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imageURLs, setImageURLs] = useState<string[]>([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files ? e.target.files[0] : null;
-    setFile(selectedFile);
+  // Handle file selection and convert to URLs
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    const urls = files.map(file => URL.createObjectURL(file));
+    setImageFiles(files);
+    setImageURLs(urls);
   };
 
   const handleInsert = () => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const url = reader.result as string;
-        onInsert({ url }); // Pass URL here
-        onClose();
-      };
-      reader.readAsDataURL(file);
+    if (imageFiles.length > 0) {
+      // Pass multiple URLs to the onInsert callback
+      onInsert({ urls: imageURLs });
+      onClose();
     }
   };
 
   return (
-    <div className="dialog fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="bg-white p-4 rounded shadow-md">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="border p-2 w-full mb-2"
-        />
-        <div className="flex justify-end space-x-2">
-          <button onClick={handleInsert} className="bg-blue-500 text-white px-4 py-2 rounded" disabled={!file}>
-            Insert
-          </button>
-          <button onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded">
-            Close
-          </button>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] bg-gray-100">
+        <DialogHeader>
+          <DialogTitle>Insert Image</DialogTitle>
+          <DialogDescription>
+            Upload one or more image files.
+          </DialogDescription>
+          <DialogClose onClick={onClose} />
+        </DialogHeader>
+        <div className="p-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            multiple
+            className="w-full p-2 border border-gray-300 rounded mt-2"
+          />
+          {imageURLs.length > 0 && (
+            <div className="mt-2">
+              {imageURLs.map((url, index) => (
+                <img key={index} src={url} alt={`Preview ${index}`} className="max-w-full h-auto" />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button onClick={handleInsert} disabled={imageFiles.length === 0} className="mr-2">
+            Insert
+          </Button>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
-};
+}

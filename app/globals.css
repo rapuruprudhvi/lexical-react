@@ -32,3 +32,17 @@ a {
   margin: 1.5rem 0; /* Equivalent to my-6 in Tailwind */
   border-top: 2px solid red; /* Equivalent to border-t and border-red-500 */
 }
+.image-dialog {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+}
+/* styles.css */
+.lexical-image {
+  max-width: 100%;
+  display: block;
+}
