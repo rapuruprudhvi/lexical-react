@@ -24,3 +24,11 @@
   display: block;  /* Ensures image is displayed as a block element */
   margin: 16px 0;  /* Adds margin to space out images */
 }
+a {
+  color: blue;
+  text-decoration: underline;
+}
+.my-custom-horizontal-rule {
+  margin: 1.5rem 0; /* Equivalent to my-6 in Tailwind */
+  border-top: 2px solid red; /* Equivalent to border-t and border-red-500 */
+}

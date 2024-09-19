@@ -1,3 +1,74 @@
+// "use client";
+// import React, { useState } from "react";
+// import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+// import { TOGGLE_LINK_COMMAND } from "@lexical/link";
+
+// export function Toolbar() {
+//   const [editor] = useLexicalComposerContext();
+//   const [showLinkPrompt, setShowLinkPrompt] = useState(false);
+//   const [linkURL, setLinkURL] = useState("");
+//   const [linkAttributes, setLinkAttributes] = useState({ target: "_blank" });
+
+//   const openLinkPrompt = () => {
+//     setShowLinkPrompt(true);
+//   };
+
+//   const closeLinkPrompt = () => {
+//     setShowLinkPrompt(false);
+//   };
+
+//   const insertLink = () => {
+//     editor.update(() => {
+//       if (linkURL) {
+//         editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+//           url: linkURL,
+//           ...linkAttributes,
+//         });
+//       }
+//     });
+//     setLinkURL("");
+//     setLinkAttributes({ target: "_blank" });
+//     closeLinkPrompt();
+//   };
+
+//   return (
+//     <div className="p-2 flex items-center border-b border-gray-700 bg-white shadow-sm">
+//       {/* Insert Link Button */}
+//       <button
+//         onClick={openLinkPrompt}
+//         className="toolbar-item flex items-center"
+//         aria-label="Insert Link"
+//       >
+//         link
+//       </button>
+
+//       {/* Show Link Prompt */}
+//       {showLinkPrompt && (
+//         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white shadow-lg rounded">
+//           <input
+//             type="text"
+//             value={linkURL}
+//             onChange={(e) => setLinkURL(e.target.value)}
+//             placeholder="Enter link URL"
+//             className="border p-2 rounded w-full"
+//           />
+//           <button
+//             onClick={insertLink}
+//             className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+//           >
+//             Insert Link
+//           </button>
+//           <button
+//             onClick={closeLinkPrompt}
+//             className="bg-gray-500 text-white px-4 py-2 rounded mt-2 ml-2"
+//           >
+//             Cancel
+//           </button>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
 "use client";
 import React, { useState, useEffect } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -32,6 +103,7 @@ import { INSERT_IMAGE_COMMAND } from '../components/plugins/ImageNode';
 import { InsertImageDialog } from '../components/InsertImageDialog';
 import { FORMAT_FONTFAMILY_COMMAND } from "./plugins/FontFamilyPlugin";
 
+
 type FontFamily =
   | "Arial"
   | "Courier New"
@@ -51,7 +123,6 @@ export function Toolbar() {
   const [alignment, setAlignment] = useState<AlignmentType>("left");
   const [showInsertImageDialog, setShowInsertImageDialog] = useState(false);
   const [fontFamily, setFontFamily] = useState<FontFamily>("Arial");
-
 
   useEffect(() => {
     const updateFormattingStatus = () => {

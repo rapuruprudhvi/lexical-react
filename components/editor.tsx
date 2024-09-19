@@ -9,12 +9,16 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { HeadingNode } from '@lexical/rich-text';
 import { ListNode, ListItemNode } from '@lexical/list';
 import { Toolbar } from './toolbar';
-import { LinkNode } from '@lexical/link';
-import { LinkPlugin as LexicalLinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin';
 import { ImageNode } from '../components/plugins/ImageNode';
 import { FontFamilyPlugin, FontNode } from './plugins/FontFamilyPlugin';
+import { AutoLinkPlugin, createLinkMatcherWithRegExp } from '@lexical/react/LexicalAutoLinkPlugin';
+import { LinkNode, AutoLinkNode } from '@lexical/link'; // Import AutoLinkNode
+
+
+const linkMatcher = createLinkMatcherWithRegExp(/https?:\/\/[^\s]+/gi);
+
 
 const theme = {
   heading: {
@@ -30,7 +34,7 @@ const theme = {
     underline: 'underline',
     strikethrough: 'line-through',
   },
-  link: 'text-blue-500 underline',
+  link: 'text-blue-500 underline', // Ensure link styling
   alignment: {
     left: 'text-left',
     center: 'text-center',
@@ -48,16 +52,20 @@ function onError(error: Error) {
 export function Editor() {
   const initialConfig = {
     namespace: 'MyEditor',
-    nodes: [HeadingNode,
+    nodes: [
+      HeadingNode,
       ListNode,
       ListItemNode,
       LinkNode,
+      AutoLinkNode,
       HorizontalRuleNode,
       ImageNode,
-      FontNode],
+      FontNode
+    ],
     theme,
     onError,
   };
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <Toolbar />
@@ -66,7 +74,7 @@ export function Editor() {
         placeholder={<div>Enter some text...</div>}
         ErrorBoundary={LexicalErrorBoundary}
       />
-      <LexicalLinkPlugin />
+      <AutoLinkPlugin matchers={[linkMatcher]} />
       <FontFamilyPlugin />
       <HistoryPlugin />
       <AutoFocusPlugin />
