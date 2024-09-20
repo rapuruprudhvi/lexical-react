@@ -1,76 +1,5 @@
-// "use client";
-// import React, { useState } from "react";
-// import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-// import { TOGGLE_LINK_COMMAND } from "@lexical/link";
-
-// export function Toolbar() {
-//   const [editor] = useLexicalComposerContext();
-//   const [showLinkPrompt, setShowLinkPrompt] = useState(false);
-//   const [linkURL, setLinkURL] = useState("");
-//   const [linkAttributes, setLinkAttributes] = useState({ target: "_blank" });
-
-//   const openLinkPrompt = () => {
-//     setShowLinkPrompt(true);
-//   };
-
-//   const closeLinkPrompt = () => {
-//     setShowLinkPrompt(false);
-//   };
-
-//   const insertLink = () => {
-//     editor.update(() => {
-//       if (linkURL) {
-//         editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
-//           url: linkURL,
-//           ...linkAttributes,
-//         });
-//       }
-//     });
-//     setLinkURL("");
-//     setLinkAttributes({ target: "_blank" });
-//     closeLinkPrompt();
-//   };
-
-//   return (
-//     <div className="p-2 flex items-center border-b border-gray-700 bg-white shadow-sm">
-//       {/* Insert Link Button */}
-//       <button
-//         onClick={openLinkPrompt}
-//         className="toolbar-item flex items-center"
-//         aria-label="Insert Link"
-//       >
-//         link
-//       </button>
-
-//       {/* Show Link Prompt */}
-//       {showLinkPrompt && (
-//         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white shadow-lg rounded">
-//           <input
-//             type="text"
-//             value={linkURL}
-//             onChange={(e) => setLinkURL(e.target.value)}
-//             placeholder="Enter link URL"
-//             className="border p-2 rounded w-full"
-//           />
-//           <button
-//             onClick={insertLink}
-//             className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-//           >
-//             Insert Link
-//           </button>
-//           <button
-//             onClick={closeLinkPrompt}
-//             className="bg-gray-500 text-white px-4 py-2 rounded mt-2 ml-2"
-//           >
-//             Cancel
-//           </button>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
 "use client";
-import React, { useState, useEffect,useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   FORMAT_TEXT_COMMAND,
@@ -105,6 +34,8 @@ import { insertImage } from '../components/plugins/ImageNode'; // Ensure the pat
 import { InsertImageDialog } from '../components/InsertImageDialog';
 import { Button } from "@/components/ui/button";
 import { $patchStyleText } from "@lexical/selection";
+import { LinkDialog } from "../components/LinkDialog";
+import { $createLinkNode } from "./plugins/linkNode";
 
 
 type FontFamily =
@@ -140,6 +71,9 @@ export function Toolbar() {
   const [fontFamily, setFontFamily] = useState<FontFamily>("Arial");
   const [showInsertImageDialog, setShowInsertImageDialog] = useState(false);
   const [fontSize, setFontSize] = useState<string>(DEFAULT_FONT_SIZE + 'px');
+  const [showLinkDialog, setShowLinkDialog] = useState(false);
+
+
 
   useEffect(() => {
     const updateFormattingStatus = () => {
@@ -246,7 +180,7 @@ export function Toolbar() {
   const toggleFormatting = (format: TextFormatType) => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
   };
-    const calculateNextFontSize = (currentFontSize: number, updateType: UpdateFontSizeType | null): number => {
+  const calculateNextFontSize = (currentFontSize: number, updateType: UpdateFontSizeType | null): number => {
     let updatedFontSize = currentFontSize;
     switch (updateType) {
       case 'decrement':
@@ -329,6 +263,18 @@ export function Toolbar() {
       setFontSize(newSize);
       updateTextFontSize(newSize);
     }
+  };
+  const openLinkDialog = () => setShowLinkDialog(true);
+  const closeLinkDialog = () => setShowLinkDialog(false);
+
+  const insertLink = (url: string) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const linkNode = $createLinkNode(url);
+        selection.insertNodes([linkNode]);
+      }
+    });
   };
   return (
     <div className="p-2 flex items-center border-b border-gray-700 bg-white shadow-sm">
@@ -441,9 +387,9 @@ export function Toolbar() {
           <path d="M0 10.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zM12 0H4a2 2 0 0 0-2 2v7h1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v7h1V2a2 2 0 0 0-2-2zm2 12h-1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2H2v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2z" />
         </svg>
       </Toggle>
-      <button 
-        onClick={openInsertImageDialog} 
-        aria-label="Insert Image" 
+      <button
+        onClick={openInsertImageDialog}
+        aria-label="Insert Image"
         className="ml-2 p-1"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-image">
@@ -481,18 +427,18 @@ export function Toolbar() {
       >
         <StrikethroughIcon className="w-[16px] h-[16px] fill-[gray]" />
       </button>
-           <div className="mr-2 flex items-center">
-         <button onClick={decrementFontSize} aria-label="Decrease Font Size" className="p-1">
-           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash">
-             <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z" />
-           </svg>
-         </button>
-         <Select onValueChange={handleFontSizeChange}>
-            <SelectTrigger className="w-[115px] border-0 bg-gray-70">
-              <SelectValue placeholder={fontSize} />
-         </SelectTrigger>
-         <SelectContent>
-           {FONT_SIZE_OPTIONS.map(([value, label]) => (
+      <div className="mr-2 flex items-center">
+        <button onClick={decrementFontSize} aria-label="Decrease Font Size" className="p-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash">
+            <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z" />
+          </svg>
+        </button>
+        <Select onValueChange={handleFontSizeChange}>
+          <SelectTrigger className="w-[115px] border-0 bg-gray-70">
+            <SelectValue placeholder={fontSize} />
+          </SelectTrigger>
+          <SelectContent>
+            {FONT_SIZE_OPTIONS.map(([value, label]) => (
               <SelectItem key={value} value={value}>
                 {label}
               </SelectItem>
@@ -504,7 +450,16 @@ export function Toolbar() {
             <path d="M8 3.5a.5.5 0 0 1 .5.5V8h4.5a.5.5 0 0 1 0 1H8.5v4.5a.5.5 0 0 1-1 0V9H3a.5.5 0 0 1 0-1h4.5V4a.5.5 0 0 1 .5-.5z" />
           </svg>
         </button>
+        <button onClick={openLinkDialog}>
+          Insert Link
+        </button>
+
+        <LinkDialog
+          isOpen={showLinkDialog}
+          onClose={closeLinkDialog}
+          onInsert={insertLink}
+        />
       </div>
-      </div>
+    </div>
   )
 }
