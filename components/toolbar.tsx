@@ -70,7 +70,7 @@
 //   );
 // }
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   FORMAT_TEXT_COMMAND,
@@ -104,6 +104,7 @@ import { FORMAT_FONTFAMILY_COMMAND } from "./plugins/FontFamilyPlugin";
 import { insertImage } from '../components/plugins/ImageNode'; // Ensure the path is correct
 import { InsertImageDialog } from '../components/InsertImageDialog';
 import { Button } from "@/components/ui/button";
+import { $patchStyleText } from "@lexical/selection";
 
 
 type FontFamily =
@@ -115,6 +116,19 @@ type FontFamily =
   | "Verdana";
 
 type AlignmentType = "left" | "center" | "right" | "justify";
+// Define font size options from 8px to 40px
+const FONT_SIZE_OPTIONS: [string, string][] = Array.from({ length: 33 }, (_, i) => [
+  `${8 + i}px`,
+  `${8 + i}px`,
+]);
+
+// Define font size limits and default values
+const MIN_ALLOWED_FONT_SIZE = 8;
+const MAX_ALLOWED_FONT_SIZE = 72;
+const DEFAULT_FONT_SIZE = 15;
+
+// Define types
+type UpdateFontSizeType = 'increment' | 'decrement';
 
 export function Toolbar() {
   const [editor] = useLexicalComposerContext();
@@ -125,6 +139,7 @@ export function Toolbar() {
   const [alignment, setAlignment] = useState<AlignmentType>("left");
   const [fontFamily, setFontFamily] = useState<FontFamily>("Arial");
   const [showInsertImageDialog, setShowInsertImageDialog] = useState(false);
+  const [fontSize, setFontSize] = useState<string>(DEFAULT_FONT_SIZE + 'px');
 
   useEffect(() => {
     const updateFormattingStatus = () => {
@@ -230,6 +245,90 @@ export function Toolbar() {
 
   const toggleFormatting = (format: TextFormatType) => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
+  };
+    const calculateNextFontSize = (currentFontSize: number, updateType: UpdateFontSizeType | null): number => {
+    let updatedFontSize = currentFontSize;
+    switch (updateType) {
+      case 'decrement':
+        switch (true) {
+          case currentFontSize > MAX_ALLOWED_FONT_SIZE:
+            updatedFontSize = MAX_ALLOWED_FONT_SIZE;
+            break;
+          case currentFontSize >= 48:
+            updatedFontSize -= 12;
+            break;
+          case currentFontSize >= 24:
+            updatedFontSize -= 4;
+            break;
+          case currentFontSize >= 14:
+            updatedFontSize -= 2;
+            break;
+          case currentFontSize >= 9:
+            updatedFontSize -= 1;
+            break;
+          default:
+            updatedFontSize = MIN_ALLOWED_FONT_SIZE;
+            break;
+        }
+        break;
+      case 'increment':
+        switch (true) {
+          case currentFontSize < MIN_ALLOWED_FONT_SIZE:
+            updatedFontSize = MIN_ALLOWED_FONT_SIZE;
+            break;
+          case currentFontSize < 12:
+            updatedFontSize += 1;
+            break;
+          case currentFontSize < 20:
+            updatedFontSize += 2;
+            break;
+          case currentFontSize < 36:
+            updatedFontSize += 4;
+            break;
+          case currentFontSize <= 60:
+            updatedFontSize += 12;
+            break;
+          default:
+            updatedFontSize = MAX_ALLOWED_FONT_SIZE;
+            break;
+        }
+        break;
+      default:
+        break;
+    }
+    return updatedFontSize;
+  };
+
+  const updateTextFontSize = useCallback((size: string | null) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, { 'font-size': size });
+      }
+    });
+  }, [editor]);
+
+  const handleFontSizeChange = (value: string) => {
+    setFontSize(value);
+    updateTextFontSize(value);
+  };
+
+  const incrementFontSize = () => {
+    const currentSize = parseInt(fontSize, 10);
+    if (currentSize < MAX_ALLOWED_FONT_SIZE) {
+      const newSize = `${calculateNextFontSize(currentSize, 'increment')}px`;
+      setFontSize(newSize);
+      updateTextFontSize(newSize);
+    }
+  };
+
+  const decrementFontSize = () => {
+    const currentSize = parseInt(fontSize, 10);
+    if (currentSize > MIN_ALLOWED_FONT_SIZE) {
+      const newSize = `${calculateNextFontSize(currentSize, 'decrement')}px`;
+      setFontSize(newSize);
+      updateTextFontSize(newSize);
+    }
   };
   return (
     <div className="p-2 flex items-center border-b border-gray-700 bg-white shadow-sm">
@@ -382,6 +481,30 @@ export function Toolbar() {
       >
         <StrikethroughIcon className="w-[16px] h-[16px] fill-[gray]" />
       </button>
-    </div>
+           <div className="mr-2 flex items-center">
+         <button onClick={decrementFontSize} aria-label="Decrease Font Size" className="p-1">
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-dash">
+             <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z" />
+           </svg>
+         </button>
+         <Select onValueChange={handleFontSizeChange}>
+            <SelectTrigger className="w-[115px] border-0 bg-gray-70">
+              <SelectValue placeholder={fontSize} />
+         </SelectTrigger>
+         <SelectContent>
+           {FONT_SIZE_OPTIONS.map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <button onClick={incrementFontSize} aria-label="Increase Font Size" className="p-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus">
+            <path d="M8 3.5a.5.5 0 0 1 .5.5V8h4.5a.5.5 0 0 1 0 1H8.5v4.5a.5.5 0 0 1-1 0V9H3a.5.5 0 0 1 0-1h4.5V4a.5.5 0 0 1 .5-.5z" />
+          </svg>
+        </button>
+      </div>
+      </div>
   )
 }
