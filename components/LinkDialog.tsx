@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface LinkDialogProps {
   isOpen: boolean;
@@ -9,8 +12,6 @@ interface LinkDialogProps {
 export function LinkDialog({ isOpen, onClose, onInsert }: LinkDialogProps) {
   const [url, setUrl] = useState('');
 
-  if (!isOpen) return null;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (url) {
@@ -20,36 +21,39 @@ export function LinkDialog({ isOpen, onClose, onInsert }: LinkDialogProps) {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-4 rounded-lg max-w-lg w-full">
-        <h2 className="text-lg font-bold mb-4">Insert Link</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter URL"
-            className="w-full p-2 border rounded mb-4"
-            required
-          />
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onClose}
-              className="mr-2 px-4 py-2 bg-gray-200 rounded"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Insert Link
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px] bg-gray-100">
+        <DialogHeader>
+          <DialogTitle>Insert Link</DialogTitle>
+          <DialogDescription>
+            Enter the URL you want to insert.
+          </DialogDescription>
+          <DialogClose onClick={onClose} />
+        </DialogHeader>
+        <div className="p-4">
+          <form onSubmit={handleSubmit}>
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Enter URL"
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+              required
+            />
+            <DialogFooter>
+              <Button type="submit" disabled={!url} className="mr-2">
+                Insert Link
+              </Button>
+              <Button variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -50,3 +50,42 @@ a {
   color: blue;
   text-decoration: underline;
 }
+/* html save and load */
+.editor-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  min-height: 300px;
+}
+
+.editor-input {
+  min-height: 300px;
+  outline: none;
+  padding: 10px;
+}
+
+.editor-placeholder {
+  color: #999;
+  position: absolute;
+  pointer-events: none;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.editor-heading-h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.editor-heading-h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.editor-paragraph {
+  font-size: 1em
+}
