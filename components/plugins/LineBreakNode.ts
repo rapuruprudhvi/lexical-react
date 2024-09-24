@@ -1,4 +1,4 @@
-import { ElementNode, NodeKey, SerializedElementNode } from 'lexical';
+import { ElementNode, NodeKey, SerializedElementNode, ElementFormatType } from 'lexical';
 
 export class LineBreakNode extends ElementNode {
   static getType(): string {
@@ -21,6 +21,10 @@ export class LineBreakNode extends ElementNode {
     return {
       type: 'line-break',
       version: 1,
+      children: [], // Required: Default to an empty array
+      direction: null, // You can set this to "ltr" or "rtl" based on your needs
+      format: 'normal' as ElementFormatType, // Set to a valid ElementFormatType
+      indent: 0, // Required: Default indent value
     };
   }
 }
